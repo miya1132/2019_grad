@@ -1,0 +1,20 @@
+<!doctype html>
+<html>
+<head>
+  <title>{{ title }}</title>
+  <!-- https://cdnjs.com/libraries/admin-lte -->
+  <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap.min.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/admin-lte/2.4.18/css/AdminLTE.css">
+  <script src="//ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
+  <script src="//maxcdn.bootstrapcdn.com/bootstrap/3.2.0/js/bootstrap.min.js"></script>
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+</head>
+<body>
+<div class="container">
+  {% block content %}
+  <!-- ここにメインコンテンツを書く -->
+  {% endblock %}
+</div>
+</body>
+</html>

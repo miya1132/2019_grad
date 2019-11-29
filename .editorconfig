@@ -1,0 +1,29 @@
+# http://editorconfig.org/
+# http://qiita.com/naru0504/items/82f09881abaf3f4dc171
+# http://blog.webic.org/atom-editorconfig-120
+
+root = true
+
+[**]
+end_of_line = lf
+insert_final_newline = true
+
+[**.{rb,html.erb,erb}]
+indent_style = space
+indent_size = 2
+
+[**.{css,scss,html,js.coffee,js}]
+indent_style = space
+indent_size = 2
+
+[**.py]
+indent_style = space
+indent_size = 2
+
+[**.[ch]]
+indent_style = space
+indent_size = 2
+
+[**.java]
+indent_style = space
+indent_size = 2

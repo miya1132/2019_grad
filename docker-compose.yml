@@ -1,0 +1,35 @@
+version: '3'
+services:
+  db:   
+    image: mysql:5.6
+    container_name: grad_db
+    volumes:
+      - db-volume:/var/lib/mysql
+      - ./build/db/my.cnf:/etc/mysql/conf.d/my.cnf
+    environment:
+      MYSQL_ROOT_PASSWORD: VdwKsbe7rgM3
+      TZ: 'Asia/Tokyo'
+    ports:
+      - '3306:3306'
+  mosquitto:
+    image: eclipse-mosquitto
+    container_name: grad_mqtt
+    ports:
+      - "1883:1883"
+      - "9001:9001"
+    volumes:
+      - ./build/mosquitto/mosquitto.conf:/mosquitto/config/mosquitto.conf
+  app: &app
+    container_name: grad_app
+    build:
+      context: .
+      dockerfile: build/python/Dockerfile
+    ports:
+     - "5000:5000"
+    volumes:
+      - ./flask:/var/www/html
+    command: python app.py
+    tty: true
+
+volumes:
+  db-volume:
