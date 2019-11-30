@@ -30,6 +30,20 @@ services:
       - ./flask:/var/www/html
     command: python app.py
     tty: true
+    links:
+      - db
+      
+  subscribe: 
+    container_name: subscribe_app
+    build:
+      context: .
+      dockerfile: build/python/Dockerfile
+    ports:
+     - "3000:3000"
+    volumes:
+      - ./subscribe:/var/www/html
+    command: python subscribe.py
+    tty: true
 
 volumes:
   db-volume:
