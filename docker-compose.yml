@@ -23,7 +23,7 @@ services:
     container_name: grad_app
     build:
       context: .
-      dockerfile: build/python/Dockerfile
+      dockerfile: build/flask/Dockerfile
     ports:
      - "5000:5000"
     volumes:
@@ -32,18 +32,19 @@ services:
     tty: true
     links:
       - db
-      
   subscribe: 
     container_name: subscribe_app
     build:
       context: .
-      dockerfile: build/python/Dockerfile
+      dockerfile: build/subscribe/Dockerfile
     ports:
      - "3000:3000"
     volumes:
-      - ./subscribe:/var/www/html
-    command: python subscribe.py
+      - ./subscribe:/var/subscribe
+    command: python app.py
     tty: true
+    links:
+      - mosquitto
 
 volumes:
   db-volume:

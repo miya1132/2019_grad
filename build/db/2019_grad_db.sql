@@ -21,3 +21,12 @@ CREATE TABLE users (
 
 insert into users(name,login_id,password,created_at,updated_at) values('テスト01','dev','dev',now(),now());
 insert into users(name,login_id,password,created_at,updated_at) values('test02','dev2','dev2',now(),now());
+
+CREATE TABLE dht11 (
+  id int(11) NOT NULL AUTO_INCREMENT,
+  temperature float, 
+  humidity int,
+  measurement_at datetime,
+  PRIMARY KEY (id)
+) ENGINE=InnoDB AUTO_INCREMENT=48 DEFAULT CHARSET=utf8mb4;
+
