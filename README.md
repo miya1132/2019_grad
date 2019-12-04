@@ -57,3 +57,46 @@ git checkout -b feature/IJU-APP-001 origin/feature/IJU-APP-001
 ```
 
 ## docker-compose コマンド
+### 起動
+```
+# foregroundで起動
+docker-compose up
+docker-compose up --build
+
+# backgroundで起動
+docker-compose up -d
+docker-compose up -d --build
+```
+
+### 停止
+```
+# foregroundで起動していた場合
+Ctr + C
+
+# backgroundで起動していた場合
+docker-compose stop
+
+# 停止＆削除（コンテナ・ネットワーク）
+docker-compose down
+
+# 停止＆削除（コンテナ・ネットワーク・イメージ）
+docker-compose down --rmi all
+
+# 停止＆削除（コンテナ・ネットワーク・ボリューム）
+docker-compose down -v
+```
+
+### コンテナ・イメージの全削除
+```
+docker-compose down --rmi all
+```
+
+### キャッシュなしビルド
+```
+docker-compose build --no-cache
+```
+
+### コンテナに入る
+```
+docker exec -it grad_db bash  
+```
