@@ -7,7 +7,7 @@ services:
       - db-volume:/var/lib/mysql
       - ./build/db/my.cnf:/etc/mysql/conf.d/my.cnf
     environment:
-      MYSQL_ROOT_PASSWORD: VdwKsbe7rgM3
+      MYSQL_ROOT_PASSWORD: 2019_grad
       TZ: 'Asia/Tokyo'
     ports:
       - '3306:3306'
