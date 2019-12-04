@@ -100,3 +100,14 @@ docker-compose build --no-cache
 ```
 docker exec -it grad_db bash  
 ```
+
+
+### MySQLパスワード変更
+```
+# docker exec -it grad_db bash
+> mysql -u root -p
+> パスワードをVdwKsbe7rgM3で入る
+
+mysql> UPDATE user SET authentication_string=password('2019_grad') WHERE user='root';
+mysql> flush privileges;
+```
