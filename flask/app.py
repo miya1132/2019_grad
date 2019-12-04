@@ -20,7 +20,7 @@ class User(UserMixin):
 connect = mysql.connector.connect(
   host="db",
   user="root",
-  passwd="VdwKsbe7rgM3",
+  passwd="2019_grad",
   database="2019_grad_db"
 )
 
