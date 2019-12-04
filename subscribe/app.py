@@ -38,7 +38,7 @@ def on_message(client, userdata, msg):
   conn = mysql.connector.connect(
     host="db",
     user="root",
-    passwd="VdwKsbe7rgM3",
+    passwd="2019_grad",
     database="2019_grad_db"
   )
   cursor = conn.cursor()
