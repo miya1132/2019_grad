@@ -108,6 +108,7 @@ docker exec -it grad_db bash
 > mysql -u root -p
 > パスワードをVdwKsbe7rgM3で入る
 
-mysql> UPDATE user SET authentication_string=password('2019_grad') WHERE user='root';
+mysql> use mysql
+mysql> update mysql.user set password=password('2019_grad') where user = 'root';
 mysql> flush privileges;
 ```
