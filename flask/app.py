@@ -1,9 +1,10 @@
 #!/usr/bin/env python3
-from flask import Flask, request, Response, abort, render_template, redirect
+from flask import Flask, request, Response, abort, render_template, redirect, jsonify
 from flask_login import LoginManager, login_user, logout_user, login_required, UserMixin
 from collections import defaultdict
 import traceback
 import mysql.connector
+import json
 
 app = Flask(__name__)
 login_manager = LoginManager()
@@ -37,7 +38,7 @@ def home():
 @app.route('/login', methods=["POST", "GET"])
 def login():
   if(request.method == "POST"):
-    
+
     try:
       # ユーザーチェック
       cursor = connect.cursor(dictionary=True)
@@ -65,6 +66,61 @@ def login():
 def logout():
   logout_user()
   return redirect("/login")
+
+# ajax通信
+@app.route('/ajax_post', methods=['POST'])
+def ajax_process():
+  
+  result = get_dht11(request.json)
+  return_json = []  #初期化
+  
+  for i in result:
+    return_json.append(json.dumps({
+      'id': i['id'],
+      'temperature': i['temperature'],
+      'humidity': i['humidity'],
+      'time': str(i['measurement_at'])
+    }))
+  
+  return jsonify(ResultSet=(return_json))
+
+
+def get_dht11(request_json):  #sql組み立て
+  table = 'dht11'
+  target_date = request_json["target_date"] + '%'
+  from_date = request_json["target_date"] +' '+ request_json["from_time"]
+  to_date = request_json["target_date"] +' '+ request_json["to_time"]
+
+  values =[target_date,from_date,to_date]
+  
+  sql = "select * from (select * from {} where measurement_at like %s) as A  where measurement_at between %s and %s ;".format(table)
+
+  # dev用
+  # sql = "select * from (select * from dht11 where measurement_at like '') as A  where measurement_at between '' and '' ;"
+  # sql = "select * from {} ;".format(table)
+  
+  result = exec_sql(sql, *values)
+  return result
+
+def exec_sql(sql, *values): #sql実行
+  print("values: ",values)
+  try:
+    connect = mysql.connector.connect(
+      host="db",
+      user="root",
+      passwd="2019_grad",
+      database="2019_grad_db"
+    )
+    cursor = connect.cursor(dictionary=True)
+    cursor.execute(sql,values)
+    print("statement: ",cursor.statement)
+    result = cursor.fetchall()
+    return result
+  except:
+    print("except")
+    return abort(500)
+  finally:
+    cursor.close()
 
 if __name__ == '__main__':
     app.run(host="0.0.0.0", debug=True)
