@@ -3,33 +3,40 @@
 <h3>Hello</h3>
 こんにちは。{{ name }}さん。
 {{dht11_data}}
+
 <head>
-<meta charset="utf-8">
-<title>グラフ</title>
-<style>
-    
-</style>
+    <meta charset="utf-8">
+    <title>グラフ</title>
+    <style>
+
+    </style>
 </head>
 
 <body>
+    <nobr>
         <div class="container">
-            <input type="date" id="target_date" value="2019-12-12">
-            <input type="time" id="from_time" value="00:00"><strong>〜</strong>
+            <input type="date" id="from_date" value="2019-12-12">
+            <input type="time" id="from_time" value="00:00"><strong> 〜</strong>
+            <input type="date" id="to_date" value="2019-12-18">
             <input type="time" id="to_time" value="12:00">
         </div>
-        <div class="row">
-            <div class="col-xs-offset-8 col-xs-4">
-                <button type="submit" class="btn btn-primary btn-block btn-flat" onclick="post_ajax()">検索</button>
-            </div>
+    </nobr>
+    <hr>
+    <br>
+    <div class="row">
+        <div class="col-xs-offset-8 col-xs-4">
+            <button type="submit" class="btn btn-primary btn-block btn-flat" onclick="post_ajax()">検索</button>
         </div>
+    </div>
     </div>
 
     <h1>折れ線グラフ</h1>
-    
+
     <canvas id="myLineChart"></canvas>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.7.2/Chart.bundle.js"></script>
-    
+
     <script>
+        console.log($('#from_date').val())
         //初期化
         const temperature = []
         const humidity = []
@@ -37,61 +44,67 @@
 
         function post_ajax() {
             //非同期通信時に変数内クリア
-            temperature.length =0;
+            temperature.length = 0;
             humidity.length = 0;
             time.length = 0;
+
             //ページ内の検索日時を取得
-            var send_data = JSON.stringify({"target_date": $('#target_date').val(), "from_time": $('#from_time').val(),"to_time": $('#to_time').val()});
-            console.log("send_data",send_data)
+            var send_data = JSON.stringify({ "from_date": $('#from_date').val(), "from_time": $('#from_time').val(), "to_date": $('#to_date').val(), "to_time": $('#to_time').val() });
+            console.log("send_data", send_data)
             //非同期通信
             $.ajax({
-            type: 'POST',
-            url: '/ajax_post',
-            data: send_data,
-            contentType: 'application/json',
-            success: function (data) {
-                //非同期通信、成功時
-                console.log("receive_data",data.ResultSet)
-                //Jsonに整形し各配列に追加
-                for(x of data.ResultSet){
-                    xn = JSON.parse(x)
-                    temperature.push(xn.temperature)
-                    humidity.push(xn.humidity)
-                    time.push((xn.time).split(' ')[1])
+                type: 'POST',
+                url: '/ajax_post',
+                data: send_data,
+                contentType: 'application/json',
+                timeout : 10000,
+                success: function (data) {
+                    //非同期通信、成功時
+                    console.log("receive_data", data.ResultSet)
+                    //Jsonに整形し各配列に追加
+                    for (x of data.ResultSet) {
+                        xn = JSON.parse(x)
+                        temperature.push(xn.temperature)
+                        humidity.push(xn.humidity)
+                        time.push([((xn.time).split(' ')[0]),((xn.time).split(' ')[1])])
+                    }
+                    //ログ取得後、chart描画
+                    chart();
+                },
+                error: function (XMLHttpRequest, textStatus, errorThrown) {
+                    //非同期で通信失敗時に読み出される
+                    console.log('Error : ' + errorThrown);
                 }
-                //ログ取得後、chart描画
-                chart();
-            },
-            error: function(XMLHttpRequest, textStatus, errorThrown) {
-                //非同期で通信失敗時に読み出される
-                console.log('Error : ' + errorThrown);
-            }
             })
         }
-        
+
         var ctx = document.getElementById("myLineChart");
-        function chart(){
+        function chart() {
             var myLineChart = new Chart(ctx, {
                 type: 'line',
                 data: {
-                    labels: time.slice(0,time.length),
-                        datasets: [
-                            {
-                                label: '温度',
-                                data: temperature.slice(0,temperature.length),
-                                    borderColor: "rgba(255,0,0,1)",
-                                    backgroundColor: "rgba(0,0,0,0)",
-                                    yAxisID: "y-axis-1"
-                            },
-                            {
-                                label: '湿度',
-                                data: humidity.slice(0,humidity.length),
-                                borderColor: "rgba(0,255,0,1)",
-                                backgroundColor: "rgba(0,0,0,0)",
-                                yAxisID: "y-axis-2"   
-                            }
+                    labels: time.slice(0, time.length),
+                    datasets: [
+                        {
+                            label: '温度',
+                            data: temperature.slice(0, temperature.length),
+                            pointBorderWidth: .1,
+                            spanGaps: true,
+                            borderColor: "rgba(255,0,0,1)",
+                            backgroundColor: "rgba(0,0,0,0)",
+                            yAxisID: "y-axis-1"
+                        },
+                        {
+                            label: '湿度',
+                            data: humidity.slice(0, humidity.length),
+                            pointBorderWidth: .1,
+                            spanGaps: true,
+                            borderColor: "rgba(0,255,0,1)",
+                            backgroundColor: "rgba(0,0,0,0)",
+                            yAxisID: "y-axis-2"
+                        }
 
-                        ],
+                    ],
                 },
                 options: {
                     title: {
@@ -103,20 +116,17 @@
                             id: "y-axis-1",
                             position: "left",
                             ticks: {
-                                suggestedMax: 40,
-                                suggestedMin: 10,
-                                stepSize: 10,
+                                
+                                stepSize: 5,
                                 callback: function (value, index, values) {
                                     return value + '度'
                                 }
                             }
-                        },{
+                        }, {
                             id: "y-axis-2",
                             position: "right",
                             ticks: {
-                                suggestedMax: 70,
-                                suggestedMin: 40,
-                                stepSize: 10,
+                                stepSize: 1,
                                 callback: function (value, index, values) {
                                     return value + '%'
                                 }
@@ -127,6 +137,6 @@
             });
         }
     </script>
-    
-    
+
+
     {% endblock %}

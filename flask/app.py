@@ -87,16 +87,15 @@ def ajax_process():
 
 def get_dht11(request_json):  #sql組み立て
   table = 'dht11'
-  target_date = request_json["target_date"] + '%'
-  from_date = request_json["target_date"] +' '+ request_json["from_time"]
-  to_date = request_json["target_date"] +' '+ request_json["to_time"]
-
-  values =[target_date,from_date,to_date]
   
-  sql = "select * from (select * from {} where measurement_at like %s) as A  where measurement_at between %s and %s ;".format(table)
+  from_date = request_json["from_date"] +' '+ request_json["from_time"]
+  to_date = request_json["to_date"] +' '+ request_json["to_time"]
 
+  values =[from_date,to_date]
+  
+  sql = "select * from {} where measurement_at between %s and %s ;".format(table)
   # dev用
-  # sql = "select * from (select * from dht11 where measurement_at like '') as A  where measurement_at between '' and '' ;"
+  # sql = "select * from dht11 where measurement_at between "2019-12-11 00:00:00" and "2019-12-13 13:00:00" ; "
   # sql = "select * from {} ;".format(table)
   
   result = exec_sql(sql, *values)
