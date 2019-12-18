@@ -57,6 +57,7 @@
                 url: '/ajax_post',
                 data: send_data,
                 contentType: 'application/json',
+                timeout : 10000,
                 success: function (data) {
                     //非同期通信、成功時
                     console.log("receive_data", data.ResultSet)
